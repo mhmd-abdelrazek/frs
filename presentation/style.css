@@ -452,6 +452,25 @@ section.visible .api-card:nth-child(3) { animation-delay:.28s }
   .arch-diagram { flex-direction: column; }
   .hardware-grid { grid-template-columns: 1fr; }
   .nav-pills { display: none; }
+  
+  /* Cover Responsive */
+  #cover { text-align: center; }
+  .cover-inner { margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+  .cover-title { font-size: 44px; margin-bottom: 20px; }
+  .cover-subtitle { margin-bottom: 32px; }
+  .cover-supervisor { justify-content: center; width: 100%; }
+  .cover-actions { flex-direction: column; width: 100%; gap: 12px; margin-top: 28px; }
+  .btn { width: 100%; justify-content: center; }
+  
+  .fp-deco, .fp-image {
+    right: 0; left: 0; margin: 0 auto;
+    width: 260px; height: 260px;
+    opacity: 0.06 !important;
+    animation: none !important;
+    transform: translateY(-50%) !important;
+    filter: none !important;
+  }
+  .fp-scanner, .data-node { display: none; }
 }
 
 /* ════════════════════════════════

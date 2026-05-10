@@ -28,7 +28,7 @@ SUCCESS --> READY
 flowchart TD
 A1[Serial Begin]
 A2[Init LEDs + Buzzer]
-A3[showError -1 Red LED ON]
+A3[Show Error Red LED ON]
 A4[Connect WiFi]
 A5[Sync Time NTP]
 A6[Init Fingerprint Sensor]
@@ -37,7 +37,7 @@ A8[Print Error + Halt]
 A9[Get Latest Session ID]
 A10{Session ID Found?}
 A11[Retry after 1 sec]
-A12[showReady Blue LED ON]
+A12[Show Ready Blue LED ON]
 
 A1 --> A2 --> A3 --> A4 --> A5 --> A6 --> A7
 A7 -->|No| A8
@@ -91,12 +91,12 @@ S2 --> READY2((Back To READY))
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    Object.keys(graphs).forEach(id => {
-        const container = document.getElementById('mermaid-' + id);
-        if (container) {
-            container.textContent = graphs[id];
-        }
-    });
+  Object.keys(graphs).forEach(id => {
+    const container = document.getElementById('mermaid-' + id);
+    if (container) {
+      container.textContent = graphs[id];
+    }
+  });
 
-    mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+  mermaid.init(undefined, document.querySelectorAll('.mermaid'));
 });
