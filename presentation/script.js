@@ -6,17 +6,32 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: 0.1 });
 document.querySelectorAll('section').forEach(s => observer.observe(s));
 
+const sections = document.querySelectorAll('section');
 const navLinks = document.querySelectorAll('.nav-pills a');
-const io = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      navLinks.forEach(l => l.classList.remove('active'));
-      const link = document.querySelector(`.nav-pills a[href="#${e.target.id}"]`);
-      if (link) link.classList.add('active');
+
+function updateActiveNav() {
+  let current = '';
+  const scrollY = window.scrollY;
+
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (scrollY >= sectionTop - window.innerHeight / 3) {
+      current = section.getAttribute('id');
     }
   });
-}, { threshold: 0.4 });
-document.querySelectorAll('section').forEach(s => io.observe(s));
+
+  if (current) {
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === `#${current}`) {
+        link.classList.add('active');
+      }
+    });
+  }
+}
+
+window.addEventListener('scroll', updateActiveNav);
+updateActiveNav();
 
 let idleTimer;
 function resetIdleTimer() {

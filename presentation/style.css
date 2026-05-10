@@ -17,6 +17,10 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--paper);
   color: var(--ink);
@@ -115,6 +119,23 @@ h2.section-title {
   font-size: 14px; color: rgba(246,244,239,.55);
 }
 .cover-supervisor strong { color: rgba(246,244,239,.9); font-weight: 600; }
+.cover-actions { display: flex; gap: 16px; margin-top: 42px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; border-radius: 6px;
+  font-family: var(--sans); font-size: 14px; font-weight: 600;
+  text-decoration: none; transition: transform .3s, box-shadow .3s, background .3s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-github {
+  background: rgba(255,255,255,.05); color: #fff;
+  border: 1px solid rgba(255,255,255,.1);
+}
+.btn-github:hover { background: rgba(255,255,255,.1); box-shadow: 0 6px 20px rgba(0,0,0,.2); }
+.btn-download {
+  background: var(--accent); color: #fff;
+}
+.btn-download:hover { background: #a83520; box-shadow: 0 6px 20px rgba(200,67,42,.35); }
 
 /* ════════════════════════════════
    PARTICIPANTS
@@ -153,13 +174,20 @@ h2.section-title {
 .arch-node-desc { font-size: 13px; color: rgba(246,244,239,.38); line-height: 1.55; max-width: 138px; }
 .arch-connector { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 0 18px; }
 .arch-connector-line {
-  width: 56px; height: 2px;
-  background: linear-gradient(90deg, rgba(200,67,42,.25), rgba(200,67,42,.75), rgba(200,67,42,.25));
+  width: 70px; height: 2px;
+  background-image: linear-gradient(90deg, var(--accent) 50%, transparent 50%);
+  background-size: 8px 2px;
   position: relative;
+  animation: dashMove 1s linear infinite;
+  opacity: 0.8;
 }
 .arch-connector-line::after {
-  content: '↔'; position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
-  font-size: 14px; color: var(--accent);
+  content: '⇄'; position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+  font-size: 15px; color: var(--accent); background: var(--dark); padding: 0 6px;
+  letter-spacing: -2px;
+}
+@keyframes dashMove {
+  to { background-position: 16px 0; }
 }
 .arch-connector-label { font-size: 11px; color: rgba(246,244,239,.28); letter-spacing: .08em; }
 .arch-accent { border-color: rgba(200,67,42,.4) !important; background: rgba(200,67,42,.07) !important; }
@@ -211,6 +239,7 @@ tr:hover td { background: #fdf9f5; }
 }
 .hw-card:hover { border-color: rgba(200,67,42,.35); }
 .hw-icon { font-size: 44px; margin-bottom: 18px; }
+.hw-image { height: 100px; width: auto; margin-bottom: 18px; object-fit: contain; }
 .hw-title { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
 .hw-desc { font-size: 14px; color: rgba(246,244,239,.42); line-height: 1.7; }
 .hw-specs { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 7px; }
@@ -385,7 +414,7 @@ section.visible .api-card:nth-child(3) { animation-delay:.28s }
     color: #f6f4ef !important;
   }
 
-  .db-panels { display: grid !important; grid-template-columns: 1fr 1fr 1fr !important; gap: 16px !important; }
+  .db-panels { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 16px !important; }
 
   .cover-title { font-size: 46px !important; }
   .section-title { font-size: 28px !important; }

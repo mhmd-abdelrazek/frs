@@ -1,44 +1,20 @@
-const apiData = {
-  esp32: [
-    {
-      name: "Query User With Fingerprint ID",
-      method: "POST",
-      url: "https://firestore.googleapis.com/v1/projects/finger-reg-system/databases/(default)/documents:runQuery",
-      body: {
-        structuredQuery: {
-          from: [{ "collectionId": "users" }],
-          where: {
-            fieldFilter: {
-              field: { "fieldPath": "fingerprintId" },
-              op: "EQUAL",
-              value: { "integerValue": "50" }
-            }
-          },
-          limit: 1
-        }
-      }
-    },
-    {
-      name: "Get Last Session",
-      method: "GET",
-      url: "https://firestore.googleapis.com/v1/projects/finger-reg-system/databases/(default)/documents/sessions?orderBy=start_time desc",
-      desc: "Retrieves the most recent session to link new attendance records."
-    },
-    {
-      name: "Save Attendance Record",
-      method: "POST",
-      url: "https://firestore.googleapis.com/v1/projects/finger-reg-system/databases/(default)/documents/records",
-      body: {
-        fields: {
-          name: { "stringValue": "Mohamed Abdelrazek" },
-          id: { "stringValue": "session_id_here" },
-          start_time: { "timestampValue": "2026-04-30T14:25:25Z" }
-        }
-      }
-    }
-  ],
-  mobile: []
-};
+function initApiRendering() {
+  try {
+    const apiData = API_DATA;
+    
+    // Replace {baseUrl} in urls
+    const baseUrl = apiData.baseUrl;
+    const processData = (reqs) => reqs.map(req => ({
+      ...req,
+      url: req.url.replace('{baseUrl}', baseUrl)
+    }));
+
+    renderRequests(processData(apiData.esp32 || []), 'esp32-requests');
+    renderRequests(processData(apiData.mobile || []), 'mobile-requests');
+  } catch (error) {
+    console.error('Failed to load API data:', error);
+  }
+}
 
 function renderRequests(data, containerId) {
   const container = document.getElementById(containerId);
@@ -58,6 +34,10 @@ function renderRequests(data, containerId) {
           <span class="api-label">Request Body</span>
           <div class="api-body-box">${JSON.stringify(req.body, null, 2)}</div>
         ` : ''}
+        ${req.response ? `
+          <span class="api-label" style="margin-top: 20px;">Example Response</span>
+          <div class="api-body-box" style="background: rgba(26,107,92,.1); border: 1px solid rgba(26,107,92,.2); color: #4ade80;">${JSON.stringify(req.response, null, 2)}</div>
+        ` : ''}
       </div>
     </div>
   `).join('');
@@ -67,10 +47,4 @@ function renderRequests(data, containerId) {
   if (section) section.style.display = 'block';
 }
 
-function initApiRendering() {
-  renderRequests(apiData.esp32, 'esp32-requests');
-  renderRequests(apiData.mobile, 'mobile-requests');
-}
-
 document.addEventListener('DOMContentLoaded', initApiRendering);
-

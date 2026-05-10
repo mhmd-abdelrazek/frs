@@ -34,9 +34,9 @@
       <a href="#participants" class="">Team</a>
       <a href="#overview">Overview</a>
       <a href="#database">Database</a>
+      <a href="#api">API</a>
       <a href="#hardware">Hardware</a>
       <a href="#flowchart">Flowchart</a>
-      <a href="#api">API</a>
     </div>
   </nav>
 
@@ -46,8 +46,18 @@
     <div class="cover-inner">
       <div class="cover-university">Faculty of Engineering · 2nd Year ECE · Benisuef University</div>
       <h1 class="cover-title">Fingerprint<br><em>Registration</em><br>System</h1>
-      <p class="cover-subtitle">Microcontroller Design Project · ESP32 + Firebase + Flutter</p>
+      <p class="cover-subtitle">Microcontroller Design Project · ESP8266 + Firebase + Flutter</p>
       <div class="cover-supervisor">Supervised by: <strong>Dr. Laila Abo Hashem</strong></div>
+      <div class="cover-actions">
+        <a href="https://github.com/mhmd-abdelrazek/frs" target="_blank" class="btn btn-github">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          GitHub Repo
+        </a>
+        <a href="https://www.mediafire.com/file/93l2u8e2e9ue4a4/FRS.apk/file" target="_blank" class="btn btn-download">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Download APK
+        </a>
+      </div>
     </div>
   </section>
 
@@ -111,7 +121,7 @@
     <div class="arch-diagram">
       <div class="arch-node arch-accent">
         <div class="arch-node-icon">🖥️</div>
-        <div class="arch-node-label">ESP32</div>
+        <div class="arch-node-label">ESP8266</div>
         <div class="arch-node-desc">Microcontroller + Fingerprint sensor. Reads biometric data on-site.</div>
       </div>
       <div class="arch-connector">
@@ -140,13 +150,13 @@
     <div class="section-tag">03 — Data Model</div>
     <h2 class="section-title">Firestore Schema</h2>
     <div class="section-rule"></div>
-    <p class="section-lead">Three collections power the system's data layer.</p>
+    <p class="section-lead">Two collections power the system's data layer.</p>
 
     <div class="db-panels">
       <div class="db-panel">
         <div class="schema-card">
           <div class="schema-header">
-            <h3>/users/{fingerprint_id}</h3>
+            <h3>/records/{auto_id}</h3>
             <div class="schema-badge">COLLECTION</div>
           </div>
           <table>
@@ -160,22 +170,34 @@
             </thead>
             <tbody>
               <tr>
-                <td class="col-key">fingerprint_id <span class="pk-badge">PK</span></td>
+                <td class="col-key">fingerprint_id</td>
                 <td class="col-type">integer</td>
-                <td class="col-sample">5, 81</td>
+                <td class="col-sample">8</td>
                 <td class="col-null">Sensor-assigned ID</td>
+              </tr>
+              <tr>
+                <td class="col-key">national_id</td>
+                <td class="col-type">string</td>
+                <td class="col-sample">2</td>
+                <td class="col-null">National ID</td>
               </tr>
               <tr>
                 <td class="col-key">name</td>
                 <td class="col-type">string</td>
                 <td class="col-sample">Mohamed Abdelrazek</td>
-                <td class="col-null">Full name</td>
+                <td class="col-null">User's Name</td>
               </tr>
               <tr>
-                <td class="col-key">national_id</td>
+                <td class="col-key">time</td>
+                <td class="col-type">integer</td>
+                <td class="col-sample">1778418209</td>
+                <td class="col-null">Check-in time (epoch)</td>
+              </tr>
+              <tr>
+                <td class="col-key">session_id</td>
                 <td class="col-type">string</td>
-                <td class="col-sample">3055559595955909</td>
-                <td class="col-null">Optional — null allowed</td>
+                <td class="col-sample">C4hXKCAzYoxYzgg...</td>
+                <td class="col-null">→ sessions</td>
               </tr>
             </tbody>
           </table>
@@ -199,67 +221,16 @@
             </thead>
             <tbody>
               <tr>
-                <td class="col-key">id <span class="pk-badge">PK</span></td>
-                <td class="col-type">string</td>
-                <td class="col-sample">a8F3k9Lx2QpZ</td>
-                <td class="col-null">Random alphanumeric key</td>
-              </tr>
-              <tr>
                 <td class="col-key">name</td>
                 <td class="col-type">string</td>
-                <td class="col-sample">Lec 4 - 2nd ECE</td>
+                <td class="col-sample">lec 3</td>
                 <td class="col-null">Session label</td>
               </tr>
               <tr>
                 <td class="col-key">start_time</td>
                 <td class="col-type">timestamp</td>
-                <td class="col-sample">1713196456</td>
-                <td class="col-null">Unix epoch (seconds)</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="db-panel">
-        <div class="schema-card">
-          <div class="schema-header">
-            <h3>/records/{auto_id}</h3>
-            <div class="schema-badge">COLLECTION</div>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Field</th>
-                <th>Type</th>
-                <th>Sample Value</th>
-                <th>Notes</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="col-key">session_id</td>
-                <td class="col-type">string (FK)</td>
-                <td class="col-sample">a8F3k9Lx2QpZ</td>
-                <td class="col-null">→ sessions</td>
-              </tr>
-              <tr>
-                <td class="col-key">name</td>
-                <td class="col-type">string</td>
-                <td class="col-sample">Mohamed Abdelrazek</td>
-                <td class="col-null">Denormalized for speed</td>
-              </tr>
-              <tr>
-                <td class="col-key">national_id</td>
-                <td class="col-type">string</td>
-                <td class="col-sample">3055559595955909</td>
-                <td class="col-null">Optional — null allowed</td>
-              </tr>
-              <tr>
-                <td class="col-key">time</td>
-                <td class="col-type">timestamp</td>
-                <td class="col-sample">1713196456</td>
-                <td class="col-null">Check-in time (epoch)</td>
+                <td class="col-sample">2026-05-08T...</td>
+                <td class="col-null">ISO 8601 Timestamp</td>
               </tr>
             </tbody>
           </table>
@@ -268,34 +239,57 @@
     </div>
   </section>
 
+  <!-- ══ API ══ -->
+  <section id="api">
+    <div class="section-tag" style="color:rgba(200,67,42,.9)">04 — ESP8266 REST Interface</div>
+    <h2 class="section-title" style="color:var(--paper)">Firestore API</h2>
+    <div class="section-rule"></div>
+    <p class="section-lead" style="color:rgba(246,244,239,.42)">The ESP8266 communicates directly with Firebase via the
+      Firestore REST API.</p>
+
+    <div id="esp32-requests" class="api-grid">
+      <!-- Dynamically rendered from requests.js -->
+    </div>
+
+    <div id="mobile-requests-section" style="margin-top: 64px; display: none;">
+      <div class="section-tag" style="color:var(--accent2)">05 — Mobile App Interface</div>
+      <h2 class="section-title" style="color:var(--paper)">Flutter API</h2>
+      <div class="section-rule" style="background:var(--accent2)"></div>
+      <p class="section-lead" style="color:rgba(246,244,239,.42)">The Flutter application uses the Firebase SDK and REST endpoints for management.</p>
+      
+      <div id="mobile-requests" class="api-grid" style="margin-top: 36px;">
+        <!-- Dynamically rendered from requests.js -->
+      </div>
+    </div>
+  </section>
+
   <!-- ══ HARDWARE ══ -->
   <section id="hardware">
-    <div class="section-tag" style="color:rgba(200,67,42,.9)">04 — Hardware</div>
-    <h2 class="section-title" style="color:var(--paper)">ESP32 Stack</h2>
+    <div class="section-tag" style="color:rgba(200,67,42,.9)">06 — Hardware</div>
+    <h2 class="section-title" style="color:var(--paper)">ESP8266 Stack</h2>
     <div class="section-rule"></div>
     <p class="section-lead" style="color:rgba(246,244,239,.42)">Embedded components at the physical attendance terminal.
     </p>
     <div class="hardware-grid">
       <div class="hw-card">
-        <div class="hw-icon">🖥️</div>
-        <div class="hw-title">ESP32 Microcontroller</div>
-        <div class="hw-desc">Dual-core 240 MHz processor with built-in Wi-Fi and Bluetooth. Handles sensor
+        <img src="images/ESP8266.png" alt="ESP8266" class="hw-image">
+        <div class="hw-title">ESP8266 Microcontroller</div>
+        <div class="hw-desc">Wi-Fi microchip with full TCP/IP stack and microcontroller capability. Handles sensor
           communication, local logic, and cloud sync over HTTP/HTTPS to Firebase.</div>
         <div class="hw-specs">
-          <div class="hw-spec">Xtensa LX6 · 240 MHz</div>
+          <div class="hw-spec">Tensilica L106 · 80 MHz</div>
           <div class="hw-spec">Wi-Fi 802.11 b/g/n</div>
-          <div class="hw-spec">Bluetooth 4.2</div>
           <div class="hw-spec">UART · GPIO</div>
         </div>
       </div>
       <div class="hw-card">
-        <div class="hw-icon">👆</div>
-        <div class="hw-title">Fingerprint Reader Module</div>
-        <div class="hw-desc">Optical fingerprint sensor (e.g. R307/AS608). Captures, enrolls, and verifies fingerprints
+        <img src="images/R307.png" alt="R307" class="hw-image">
+        <div class="hw-title">R307 Fingerprint Module</div>
+        <div class="hw-desc">Optical fingerprint sensor. Captures, enrolls, and verifies fingerprints
           on-device. Returns a numeric ID that maps to the Firestore users collection.</div>
         <div class="hw-specs">
           <div class="hw-spec">UART Interface</div>
-          <div class="hw-spec">Up to 127 templates</div>
+          <div class="hw-spec">Up to 1000 templates</div>
           <div class="hw-spec">FAR &lt; 0.001%</div>
           <div class="hw-spec">~1 s recognition</div>
         </div>
@@ -305,8 +299,8 @@
 
   <!-- ══ FLOWCHART ══ -->
   <section id="flowchart">
-    <div class="section-tag" style="color:rgba(200,67,42,.9)">05 — Logic Flow</div>
-    <h2 class="section-title" style="color:var(--paper)">ESP32 Flowchart</h2>
+    <div class="section-tag" style="color:rgba(200,67,42,.9)">07 — Logic Flow</div>
+    <h2 class="section-title" style="color:var(--paper)">ESP8266 Flowchart</h2>
     <div class="section-rule"></div>
     <p class="section-lead" style="color:rgba(246,244,239,.42)">System execution is divided into four distinct logic
       blocks.</p>
@@ -334,31 +328,8 @@
     </div>
   </section>
 
-  <!-- ══ API ══ -->
-  <section id="api">
-    <div class="section-tag" style="color:rgba(200,67,42,.9)">06 — ESP32 REST Interface</div>
-    <h2 class="section-title" style="color:var(--paper)">Firestore API</h2>
-    <div class="section-rule"></div>
-    <p class="section-lead" style="color:rgba(246,244,239,.42)">The ESP32 communicates directly with Firebase via the
-      Firestore REST API.</p>
-
-    <div id="esp32-requests" class="api-grid">
-      <!-- Dynamically rendered from requests.js -->
-    </div>
-
-    <div id="mobile-requests-section" style="margin-top: 64px; display: none;">
-      <div class="section-tag" style="color:var(--accent2)">07 — Mobile App Interface</div>
-      <h2 class="section-title" style="color:var(--paper)">Flutter API</h2>
-      <div class="section-rule" style="background:var(--accent2)"></div>
-      <p class="section-lead" style="color:rgba(246,244,239,.42)">The Flutter application uses the Firebase SDK and REST endpoints for management.</p>
-      
-      <div id="mobile-requests" class="api-grid" style="margin-top: 36px;">
-        <!-- Dynamically rendered from requests.js -->
-      </div>
-    </div>
-  </section>
-
   <script src="flowchart.js"></script>
+  <script src="api_data.js"></script>
   <script src="requests.js"></script>
   <script src="script.js"></script>
 </body>
