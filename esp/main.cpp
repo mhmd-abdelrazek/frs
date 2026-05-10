@@ -42,10 +42,9 @@ int    getFingerprintID();
 String getLatestSessionId();
 User   getUserWithFingerprintId(int fingerprintId);
 bool   uploadAttendance(User user);
-void   showSuccess();
-void   showError();
-void   showReady();
-void   beep(int ms);
+void   showSuccess(long ms, bool isUserEmpty);
+void   showError(long ms);
+void   showReady(long ms);
 
 // ============= ESP BUILT-IN FUNCTIONS =================
 
@@ -58,7 +57,7 @@ void setup() {
   pinMode(BUZZER,    OUTPUT);
   digitalWrite(BUZZER, LOW);
 
-  showError();
+  showError(-1);
 
   connectWiFi();
   configTime();
@@ -74,7 +73,7 @@ void setup() {
     delay(1000);
   }
 
-  showReady();
+  showReady(-1);
   Serial.println("Ready.");
   Serial.println("Latest session: " + lastSessionId);
 }
@@ -92,19 +91,17 @@ void loop() {
       bool success = uploadAttendance(user);
       if (success) {
         Serial.println("Uploaded Successfully!");
-        if (user.name.length() == 0) beep(200);
-        showSuccess();
+        showSuccess(5000, user.name.length() == 0);
       } else {
         Serial.println("Error Uploading record!");
-        showError();
+        showError(5000);
       }
     } else {
       Serial.println("Error Getting User!");
-      showError();
+      showError(5000);
     }
 
-    delay(5000);
-    showReady();
+    showReady(-1);
   }
 }
 
@@ -227,8 +224,9 @@ User getUserWithFingerprintId(int fingerprintId) {
   
   user.success = (code >= 200 && code < 300);
   
+  String response = http.getString();
   Serial.println("User request code: " + String(code));
-  Serial.println(http.getString());
+  Serial.println(response);
 
   if (!user.success) {
     Serial.println("Query failed: " + String(code));
@@ -236,10 +234,7 @@ User getUserWithFingerprintId(int fingerprintId) {
     return user;
   }
 
-  String response = http.getString();
-
   http.end();
-
 
   DynamicJsonDocument doc(8192);
   if (deserializeJson(doc, response)) return user;
@@ -301,26 +296,58 @@ bool uploadAttendance(User user) {
 // FEEDBACK
 // ========================================
 
-void showReady() {
+void showReady(long ms) {
   digitalWrite(RED_LED,   LOW);
   digitalWrite(GREEN_LED, LOW);
   digitalWrite(BLUE_LED,  HIGH);
+
+  if (ms < 0) return;
+
+  digitalWrite(BLUE_LED, LOW);
 }
 
-void showSuccess() {
+void showSuccess(long ms, bool isUserEmpty) {
   digitalWrite(BLUE_LED, LOW);
   digitalWrite(RED_LED,  LOW);
   digitalWrite(GREEN_LED, HIGH);
+  digitalWrite(BUZZER, HIGH);
+
+  if (isUserEmpty) {
+    digitalWrite(BUZZER, HIGH);
+    
+    int i = 0;
+    while (ms > 0) {
+      digitalWrite(RED_LED,  LOW);
+      delay(200);
+      digitalWrite(RED_LED, HIGH);
+      delay(200);
+      
+      if (i == 1) {
+        digitalWrite(BUZZER, LOW);
+      }
+      ms -= 400;
+      i++;
+    }
+
+    if (i == 0) {
+      digitalWrite(BUZZER, LOW);
+    }
+  }
+  else {
+    delay(800);
+    digitalWrite(BUZZER, LOW);
+    if (ms > 800) delay(ms - 800);
+  }
+  
+  digitalWrite(GREEN_LED, LOW);
 }
 
-void showError() {
+void showError(long ms) {
   digitalWrite(BLUE_LED,  LOW);
   digitalWrite(GREEN_LED, LOW);
   digitalWrite(RED_LED,   HIGH);
-}
 
-void beep(int ms) {
-  digitalWrite(BUZZER, HIGH);
-  delay(ms);
-  digitalWrite(BUZZER, LOW);
+  if (ms < 0) return;
+
+  digitalWrite(RED_LED, LOW);
 }
