@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "365586304387",
+    "firebase_url": "https://finger-reg-system-default-rtdb.firebaseio.com",
+    "project_id": "finger-reg-system",
+    "storage_bucket": "finger-reg-system.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:365586304387:android:353ba3a11cb62adf1bfab6",
+        "android_client_info": {
+          "package_name": "com.techsoft.frs"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUgmgu4Ru-D3qFD5RwAiApRHcWKas9LHw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
