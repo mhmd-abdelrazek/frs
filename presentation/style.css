@@ -450,6 +450,20 @@ section.visible .api-card:nth-child(3) { animation-delay:.28s }
   section { padding: 88px 22px 56px; }
   .participants-grid { grid-template-columns: 1fr; }
   .arch-diagram { flex-direction: column; }
+  .arch-connector { margin: 12px 0; }
+  .arch-connector-line {
+    width: 2px; height: 50px;
+    background-image: linear-gradient(180deg, var(--accent) 50%, transparent 50%);
+    background-size: 2px 8px;
+    animation: dashMoveMobile 1s linear infinite;
+  }
+  .arch-connector-line::after {
+    content: '⇅'; top: 50%; left: -10px; transform: translateY(-50%);
+    padding: 6px 0; letter-spacing: normal; line-height: 1;
+  }
+  @keyframes dashMoveMobile {
+    to { background-position: 0 16px; }
+  }
   .hardware-grid { grid-template-columns: 1fr; }
   .nav-pills { display: none; }
   
