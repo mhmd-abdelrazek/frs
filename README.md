@@ -83,7 +83,7 @@ Used for:
 
 Use the following diagram to view all hardware wiring:
 
-![Hardware Connection](./hardware_connection.webp)
+![Hardware Connection](./esp/hardware_connection.png)
 
 ### Hardware Used
 - ESP8266
@@ -255,8 +255,5 @@ Contains:
 
 - APK: **https://www.mediafire.com/file/93l2u8e2e9ue4a4/FRS.apk/file**
 
----
+- Presentation: **https://mhmd-abdelrazek.github.io/frs/presentation**
 
-## 📄 License
-
-Academic project for Microcontroller Design course.

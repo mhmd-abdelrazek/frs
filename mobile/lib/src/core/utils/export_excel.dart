@@ -16,7 +16,7 @@ class ExportExcel {
     // Header
     sheet.appendRow([
       TextCellValue('National ID'),
-      TextCellValue('name'),
+      TextCellValue('Name'),
       TextCellValue('Time'),
       TextCellValue('Year'),
       TextCellValue('Month'),
@@ -26,11 +26,11 @@ class ExportExcel {
     // Rows
     for (final record in records) {
       sheet.appendRow([
-        TextCellValue(record.nationalId ?? ""),
+        TextCellValue(record.nationalId ?? "No ID"),
         TextCellValue(record.name),
         TextCellValue(
           record.createdAt == null
-              ? ""
+              ? "00:00"
               : "${record.createdAt!.hour}:${record.createdAt!.minute}",
         ),
         TextCellValue((record.createdAt?.year ?? 0).toString()),
@@ -43,7 +43,7 @@ class ExportExcel {
     if (bytes == null) return;
 
     final dir = await getTemporaryDirectory();
-    final file = File('${dir.path}/${Uri.encodeComponent(sessionName)}.xlsx');
+    final file = File('${dir.path}/$sessionName.xlsx');
 
     await file.writeAsBytes(bytes, flush: true);
 

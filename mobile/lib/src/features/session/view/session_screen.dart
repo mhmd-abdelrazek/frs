@@ -7,7 +7,6 @@ import 'package:frs/src/features/common/widgets/connection_error_widget.dart';
 import 'package:frs/src/features/common/widgets/binary_headed_scroll_view.dart';
 import 'package:frs/src/features/common/widgets/responsive_safe_area.dart';
 import 'package:frs/src/features/common/widgets/show_hide_widget.dart';
-import 'package:frs/src/features/common/widgets/update_motion_widget.dart';
 import 'package:frs/src/features/home/data/models/session.dart';
 import 'package:frs/src/features/session/data/models/session_record.dart';
 import 'package:frs/src/features/session/widgets/session_appbar.dart';
@@ -58,16 +57,39 @@ class _SessionScreenState extends State<SessionScreen> {
 
   List<SessionRecord>? get currentRecords {
     final snapshot = recordsNotifier.value;
-    if (snapshot == null) return null;
 
-    return snapshot.docs
-        .map(
-          (e) => Trier(
-            () => SessionRecord.fromFirebaseMap({...e.data(), 'id': e.id}),
-          ).invoke,
-        )
-        .whereType<SessionRecord>()
-        .toList();
+    return distinctFingerSessionsFromDocs(docs: snapshot?.docs);
+  }
+
+  static List<SessionRecord>? distinctFingerSessionsFromDocs({
+    required List<QueryDocumentSnapshot<Map<String, dynamic>>>? docs,
+  }) {
+    if (docs == null) return null;
+
+    final sessions =
+        docs
+            .map(
+              (e) => Trier(
+                () => SessionRecord.fromFirebaseMap({...e.data(), 'id': e.id}),
+              ).invoke,
+            )
+            .whereType<SessionRecord>()
+            .toList()
+          ..sort((a, b) {
+            final aDate = a.createdAt;
+            final bDate = b.createdAt;
+
+            if (aDate == null) return 1;
+            if (bDate == null) return -1;
+
+            return bDate.compareTo(aDate);
+          });
+
+    final seenFingerIds = <int>{};
+
+    sessions.removeWhere((e) => !seenFingerIds.add(e.fingerprintId));
+
+    return sessions;
   }
 
   void onExport() async {
@@ -101,26 +123,10 @@ class _SessionScreenState extends State<SessionScreen> {
           child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
             stream: _recordsStream,
             builder: (context, snapshot) {
-              final records = snapshot.data?.docs
-                  .map(
-                    (e) => Trier(
-                      () => SessionRecord.fromFirebaseMap({
-                        ...e.data(),
-                        'id': e.id,
-                      }),
-                    ).invoke,
-                  )
-                  .whereType<SessionRecord>()
-                  .toList();
-              records?.sort((a, b) {
-                final aDate = a.createdAt;
-                final bDate = b.createdAt;
+              final records = distinctFingerSessionsFromDocs(
+                docs: snapshot.data?.docs,
+              );
 
-                if (aDate == null) return 1;
-                if (bDate == null) return -1;
-
-                return bDate.compareTo(aDate);
-              });
               final preRecords = lastRecords;
               lastRecords = records;
 
