@@ -253,8 +253,7 @@ Contains:
 
 ## 📥 Download
 
-- APK: **Add your APK link here**
-- Repository: **Current repository**
+- APK: **https://www.mediafire.com/file/93l2u8e2e9ue4a4/FRS.apk/file**
 
 ---
 
