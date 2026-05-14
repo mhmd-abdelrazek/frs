@@ -91,14 +91,14 @@ void loop() {
       bool success = uploadAttendance(user);
       if (success) {
         Serial.println("Uploaded Successfully!");
-        showSuccess(5000, user.name.length() == 0);
+        showSuccess(3000, user.name.length() == 0);
       } else {
         Serial.println("Error Uploading record!");
-        showError(5000);
+        showError(3000);
       }
     } else {
       Serial.println("Error Getting User!");
-      showError(5000);
+      showError(3000);
     }
 
     showReady(-1);
@@ -308,38 +308,44 @@ void showReady(long ms) {
 
 void showSuccess(long ms, bool isUserEmpty) {
   digitalWrite(BLUE_LED, LOW);
-  digitalWrite(RED_LED,  LOW);
+  digitalWrite(RED_LED, LOW);
   digitalWrite(GREEN_LED, HIGH);
   digitalWrite(BUZZER, HIGH);
 
   if (isUserEmpty) {
-    digitalWrite(BUZZER, HIGH);
-    
-    int i = 0;
-    while (ms > 0) {
-      digitalWrite(RED_LED,  LOW);
-      delay(200);
+    bool firstBlink = true;
+    long elapsed = 0;
+
+    while (elapsed < ms) {
       digitalWrite(RED_LED, HIGH);
-      delay(200);
-      
-      if (i == 1) {
+      delay(150);
+
+      digitalWrite(RED_LED, LOW);
+      delay(150);
+
+      elapsed += 300;
+
+      // Turn off buzzer after first blink
+      if (firstBlink) {
         digitalWrite(BUZZER, LOW);
+        firstBlink = false;
       }
-      ms -= 400;
-      i++;
     }
 
-    if (i == 0) {
+    if (firstBlink) {
       digitalWrite(BUZZER, LOW);
     }
-  }
-  else {
-    delay(800);
+  } else {
+    delay(400);
     digitalWrite(BUZZER, LOW);
-    if (ms > 800) delay(ms - 800);
+
+    if (ms > 400) {
+      delay(ms - 400);
+    }
   }
-  
+
   digitalWrite(GREEN_LED, LOW);
+  digitalWrite(RED_LED, LOW);
 }
 
 void showError(long ms) {
